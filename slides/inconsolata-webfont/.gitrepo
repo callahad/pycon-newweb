@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/hakger/inconsolata-webfont.git
+	branch = master
+	commit = 43efa34bd1b08362302ed37b53e9527c1af7525f
+	parent = 61b49facc094eb1350dca6b36fdeb7cb4fa64c7e
+	cmdver = 0.2.3
