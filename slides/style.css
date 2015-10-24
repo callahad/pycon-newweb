@@ -1,0 +1,31 @@
+.reveal section img {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  text-transform: none;
+  font-family: "Open Sans";
+  font-weight: 300;
+}
+
+.reveal h1 {
+  font-family: "Open Sans Condensed";
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.reveal pre, .reveal code {
+  font-family: "Inconsolata LGC"
+}
+
+.reveal pre code {
+  padding: 1em;
+}
+
+.reveal pre {
+  box-shadow: none;
+  border: 3px solid black;
+  font-size: 0.55em;
+}
