@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/isagalaev/highlight.js.git
+	branch = master
+	commit = 54093602c06b4094f026f319c55c499997b8bfa4
+	parent = 0ae3a909447d042a1ceb82b6dd41333ecef2d293
+	cmdver = 0.2.3
