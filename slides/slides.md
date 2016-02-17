@@ -279,7 +279,7 @@ Promise.resolve("foo")
 ```javascript
 var p = Promise.resolve({});
 
-p.then(x => x["hello": "world"]);
+p.then(x => x["hello"] = "world");
 
 p.then(x => console.log(x));
 ```
