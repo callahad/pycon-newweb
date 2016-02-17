@@ -3,7 +3,7 @@
  * http://lab.hakim.se/reveal-js
  * MIT licensed
  *
- * Copyright (C) 2015 Hakim El Hattab, http://hakim.se
+ * Copyright (C) 2016 Hakim El Hattab, http://hakim.se
  */
 
 
@@ -134,6 +134,38 @@ html:-moz-full-screen-ancestor {
 
 	&.visible {
 		text-decoration: line-through;
+	}
+}
+
+.reveal .slides section .fragment.fade-up {
+	transform: translate(0, 20%);
+
+	&.visible {
+		transform: translate(0, 0);
+	}
+}
+
+.reveal .slides section .fragment.fade-down {
+	transform: translate(0, -20%);
+
+	&.visible {
+		transform: translate(0, 0);
+	}
+}
+
+.reveal .slides section .fragment.fade-right {
+	transform: translate(-20%, 0);
+
+	&.visible {
+		transform: translate(0, 0);
+	}
+}
+
+.reveal .slides section .fragment.fade-left {
+	transform: translate(20%, 0);
+
+	&.visible {
+		transform: translate(0, 0);
 	}
 }
 
@@ -329,11 +361,19 @@ html:-moz-full-screen-ancestor {
 .reveal .slide-number {
 	position: fixed;
 	display: block;
-	right: 15px;
-	bottom: 15px;
-	opacity: 0.5;
+	right: 8px;
+	bottom: 8px;
 	z-index: 31;
+	font-family: Helvetica, sans-serif;
 	font-size: 12px;
+	line-height: 1;
+	color: #fff;
+	background-color: rgba( 0, 0, 0, 0.4 );
+	padding: 5px;
+}
+
+.reveal .slide-number-delimiter {
+	margin: 0 3px;
 }
 
 /*********************************************
@@ -1164,6 +1204,7 @@ html:-moz-full-screen-ancestor {
 
 	.reveal .overlay .viewport {
 		position: absolute;
+		display: flex;
 		top: 40px;
 		right: 0;
 		bottom: 0;
@@ -1200,8 +1241,8 @@ html:-moz-full-screen-ancestor {
 
 	.reveal .overlay.overlay-help .viewport .viewport-inner {
 		width: 600px;
-		margin: 0 auto;
-		padding: 60px;
+		margin: auto;
+		padding: 20px 20px 80px 20px;
 		text-align: center;
 		letter-spacing: normal;
 	}
@@ -1213,13 +1254,13 @@ html:-moz-full-screen-ancestor {
 	.reveal .overlay.overlay-help .viewport .viewport-inner table {
 		border: 1px solid #fff;
 		border-collapse: collapse;
-		font-size: 14px;
+		font-size: 16px;
 	}
 
 	.reveal .overlay.overlay-help .viewport .viewport-inner table th,
 	.reveal .overlay.overlay-help .viewport .viewport-inner table td {
 		width: 200px;
-		padding: 10px;
+		padding: 14px;
 		border: 1px solid #fff;
 		vertical-align: middle;
 	}
@@ -1367,5 +1408,3 @@ html:-moz-full-screen-ancestor {
 .zoomed .reveal .roll span:after {
 	visibility: hidden;
 }
-
-

@@ -3,7 +3,7 @@
  * http://lab.hakim.se/reveal-js
  * MIT licensed
  *
- * Copyright (C) 2015 Hakim El Hattab, http://hakim.se
+ * Copyright (C) 2016 Hakim El Hattab, http://hakim.se
  */
 (function( root, factory ) {
 	if( typeof define === 'function' && define.amd ) {
@@ -24,6 +24,9 @@
 	'use strict';
 
 	var Reveal;
+
+	// The reveal.js version
+	var VERSION = '3.2.0';
 
 	var SLIDES_SELECTOR = '.slides section',
 		HORIZONTAL_SLIDES_SELECTOR = '.slides>section',
@@ -102,6 +105,9 @@
 
 			// Stop auto-sliding after user input
 			autoSlideStoppable: true,
+
+			// Use this method for navigation when auto-sliding (defaults to navigateNext)
+			autoSlideMethod: null,
 
 			// Enable slide navigation via mouse wheel
 			mouseWheel: false,
@@ -542,6 +548,19 @@
 		document.body.style.width = pageWidth + 'px';
 		document.body.style.height = pageHeight + 'px';
 
+		// Add each slide's index as attributes on itself, we need these
+		// indices to generate slide numbers below
+		toArray( dom.wrapper.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR ) ).forEach( function( hslide, h ) {
+			hslide.setAttribute( 'data-index-h', h );
+
+			if( hslide.classList.contains( 'stack' ) ) {
+				toArray( hslide.querySelectorAll( 'section' ) ).forEach( function( vslide, v ) {
+					vslide.setAttribute( 'data-index-h', h );
+					vslide.setAttribute( 'data-index-v', v );
+				} );
+			}
+		} );
+
 		// Slide and slide background layout
 		toArray( dom.wrapper.querySelectorAll( SLIDES_SELECTOR ) ).forEach( function( slide ) {
 
@@ -575,17 +594,32 @@
 					background.style.left = -left + 'px';
 				}
 
-				// If we're configured to `showNotes`, inject them into each slide
+				// Inject notes if `showNotes` is enabled
 				if( config.showNotes ) {
 					var notes = getSlideNotes( slide );
 					if( notes ) {
+						var notesSpacing = 8;
 						var notesElement = document.createElement( 'div' );
 						notesElement.classList.add( 'speaker-notes' );
 						notesElement.classList.add( 'speaker-notes-pdf' );
 						notesElement.innerHTML = notes;
-						notesElement.style.bottom = ( 40 - top ) + 'px';
+						notesElement.style.left = ( notesSpacing - left ) + 'px';
+						notesElement.style.bottom = ( notesSpacing - top ) + 'px';
+						notesElement.style.width = ( pageWidth - notesSpacing*2 ) + 'px';
 						slide.appendChild( notesElement );
 					}
+				}
+
+				// Inject slide numbers if `slideNumbers` are enabled
+				if( config.slideNumber ) {
+					var slideNumberH = parseInt( slide.getAttribute( 'data-index-h' ), 10 ) + 1,
+						slideNumberV = parseInt( slide.getAttribute( 'data-index-v' ), 10 ) + 1;
+
+					var numberElement = document.createElement( 'div' );
+					numberElement.classList.add( 'slide-number' );
+					numberElement.classList.add( 'slide-number-pdf' );
+					numberElement.innerHTML = formatSlideNumber( slideNumberH, '.', slideNumberV );
+					background.appendChild( numberElement );
 				}
 			}
 
@@ -856,6 +890,7 @@
 
 		dom.controls.style.display = config.controls ? 'block' : 'none';
 		dom.progress.style.display = config.progress ? 'block' : 'none';
+		dom.slideNumber.style.display = config.slideNumber && !isPrintingPDF() ? 'block' : 'none';
 
 		if( config.rtl ) {
 			dom.wrapper.classList.add( 'rtl' );
@@ -2512,30 +2547,59 @@
 	/**
 	 * Updates the slide number div to reflect the current slide.
 	 *
-	 * Slide number format can be defined as a string using the
-	 * following variables:
-	 *  h: current slide's horizontal index
-	 *  v: current slide's vertical index
-	 *  c: current slide index (flattened)
-	 *  t: total number of slides (flattened)
+	 * The following slide number formats are available:
+	 *  "h.v": 	horizontal . vertical slide number (default)
+	 *  "h/v": 	horizontal / vertical slide number
+	 *    "c": 	flattened slide number
+	 *  "c/t": 	flattened slide number / total slides
 	 */
 	function updateSlideNumber() {
 
 		// Update slide number if enabled
-		if( config.slideNumber && dom.slideNumber) {
+		if( config.slideNumber && dom.slideNumber ) {
 
-			// Default to only showing the current slide number
-			var format = 'c';
+			var value = [];
+			var format = 'h.v';
 
-			// Check if a custom slide number format is available
+			// Check if a custom number format is available
 			if( typeof config.slideNumber === 'string' ) {
 				format = config.slideNumber;
 			}
 
-			dom.slideNumber.innerHTML = format.replace( /h/g, indexh )
-												.replace( /v/g, indexv )
-												.replace( /c/g, getSlidePastCount() + 1 )
-												.replace( /t/g, getTotalSlides() );
+			switch( format ) {
+				case 'c':
+					value.push( getSlidePastCount() + 1 );
+					break;
+				case 'c/t':
+					value.push( getSlidePastCount() + 1, '/', getTotalSlides() );
+					break;
+				case 'h/v':
+					value.push( indexh + 1 );
+					if( isVerticalSlide() ) value.push( '/', indexv + 1 );
+					break;
+				default:
+					value.push( indexh + 1 );
+					if( isVerticalSlide() ) value.push( '.', indexv + 1 );
+			}
+
+			dom.slideNumber.innerHTML = formatSlideNumber( value[0], value[1], value[2] );
+		}
+
+	}
+
+	/**
+	 * Applies HTML formatting to a slide number before it's
+	 * written to the DOM.
+	 */
+	function formatSlideNumber( a, delimiter, b ) {
+
+		if( typeof b === 'number' && !isNaN( b ) ) {
+			return  '<span class="slide-number-a">'+ a +'</span>' +
+					'<span class="slide-number-delimiter">'+ delimiter +'</span>' +
+					'<span class="slide-number-b">'+ b +'</span>';
+		}
+		else {
+			return '<span class="slide-number-a">'+ a +'</span>';
 		}
 
 	}
@@ -2664,8 +2728,20 @@
 			// Start video playback
 			var currentVideo = currentBackground.querySelector( 'video' );
 			if( currentVideo ) {
-				if( currentVideo.currentTime > 0 ) currentVideo.currentTime = 0;
-				currentVideo.play();
+
+				var startVideo = function() {
+					currentVideo.currentTime = 0;
+					currentVideo.play();
+					currentVideo.removeEventListener( 'loadeddata', startVideo );
+				};
+
+				if( currentVideo.readyState > 1 ) {
+					startVideo();
+				}
+				else {
+					currentVideo.addEventListener( 'loadeddata', startVideo );
+				}
+
 			}
 
 			var backgroundImageURL = currentBackground.style.backgroundImage || '';
@@ -2740,7 +2816,7 @@
 				horizontalOffsetMultiplier = config.parallaxBackgroundHorizontal;
 			}
 			else {
-				horizontalOffsetMultiplier = ( backgroundWidth - slideWidth ) / ( horizontalSlideCount-1 );
+				horizontalOffsetMultiplier = horizontalSlideCount > 1 ? ( backgroundWidth - slideWidth ) / ( horizontalSlideCount-1 ) : 0;
 			}
 
 			horizontalOffset = horizontalOffsetMultiplier * indexh * -1;
@@ -2812,6 +2888,7 @@
 				var backgroundImage = slide.getAttribute( 'data-background-image' ),
 					backgroundVideo = slide.getAttribute( 'data-background-video' ),
 					backgroundVideoLoop = slide.hasAttribute( 'data-background-video-loop' ),
+					backgroundVideoMuted = slide.hasAttribute( 'data-background-video-muted' ),
 					backgroundIframe = slide.getAttribute( 'data-background-iframe' );
 
 				// Images
@@ -2824,6 +2901,10 @@
 
 					if( backgroundVideoLoop ) {
 						video.setAttribute( 'loop', '' );
+					}
+
+					if( backgroundVideoMuted ) {
+						video.muted = true;
 					}
 
 					// Support comma separated lists of video sources
@@ -3630,7 +3711,10 @@
 			// - The overview isn't active
 			// - The presentation isn't over
 			if( autoSlide && !autoSlidePaused && !isPaused() && !isOverview() && ( !Reveal.isLastSlide() || availableFragments().next || config.loop === true ) ) {
-				autoSlideTimeout = setTimeout( navigateNext, autoSlide );
+				autoSlideTimeout = setTimeout( function() {
+					typeof config.autoSlideMethod === 'function' ? config.autoSlideMethod() : navigateNext();
+					cueAutoSlide();
+				}, autoSlide );
 				autoSlideStartTime = Date.now();
 			}
 
@@ -3775,10 +3859,6 @@
 				navigateRight();
 			}
 		}
-
-		// If auto-sliding is enabled we need to cue up
-		// another timeout
-		cueAutoSlide();
 
 	}
 
@@ -4306,8 +4386,9 @@
 	function Playback( container, progressCheck ) {
 
 		// Cosmetics
-		this.diameter = 50;
-		this.thickness = 3;
+		this.diameter = 100;
+		this.diameter2 = this.diameter/2;
+		this.thickness = 6;
 
 		// Flags if we are currently playing
 		this.playing = false;
@@ -4325,6 +4406,8 @@
 		this.canvas.className = 'playback';
 		this.canvas.width = this.diameter;
 		this.canvas.height = this.diameter;
+		this.canvas.style.width = this.diameter2 + 'px';
+		this.canvas.style.height = this.diameter2 + 'px';
 		this.context = this.canvas.getContext( '2d' );
 
 		this.container.appendChild( this.canvas );
@@ -4375,10 +4458,10 @@
 	Playback.prototype.render = function() {
 
 		var progress = this.playing ? this.progress : 0,
-			radius = ( this.diameter / 2 ) - this.thickness,
-			x = this.diameter / 2,
-			y = this.diameter / 2,
-			iconSize = 14;
+			radius = ( this.diameter2 ) - this.thickness,
+			x = this.diameter2,
+			y = this.diameter2,
+			iconSize = 28;
 
 		// Ease towards 1
 		this.progressOffset += ( 1 - this.progressOffset ) * 0.1;
@@ -4391,7 +4474,7 @@
 
 		// Solid background color
 		this.context.beginPath();
-		this.context.arc( x, y, radius + 2, 0, Math.PI * 2, false );
+		this.context.arc( x, y, radius + 4, 0, Math.PI * 2, false );
 		this.context.fillStyle = 'rgba( 0, 0, 0, 0.4 )';
 		this.context.fill();
 
@@ -4416,14 +4499,14 @@
 		// Draw play/pause icons
 		if( this.playing ) {
 			this.context.fillStyle = '#fff';
-			this.context.fillRect( 0, 0, iconSize / 2 - 2, iconSize );
-			this.context.fillRect( iconSize / 2 + 2, 0, iconSize / 2 - 2, iconSize );
+			this.context.fillRect( 0, 0, iconSize / 2 - 4, iconSize );
+			this.context.fillRect( iconSize / 2 + 4, 0, iconSize / 2 - 4, iconSize );
 		}
 		else {
 			this.context.beginPath();
-			this.context.translate( 2, 0 );
+			this.context.translate( 4, 0 );
 			this.context.moveTo( 0, 0 );
-			this.context.lineTo( iconSize - 2, iconSize / 2 );
+			this.context.lineTo( iconSize - 4, iconSize / 2 );
 			this.context.lineTo( 0, iconSize );
 			this.context.fillStyle = '#fff';
 			this.context.fill();
@@ -4458,6 +4541,8 @@
 
 
 	Reveal = {
+		VERSION: VERSION,
+
 		initialize: initialize,
 		configure: configure,
 		sync: sync,
@@ -4611,6 +4696,11 @@
 		// Programatically triggers a keyboard event
 		triggerKey: function( keyCode ) {
 			onDocumentKeyDown( { keyCode: keyCode } );
+		},
+
+		// Registers a new shortcut to include in the help overlay
+		registerKeyboardShortcut: function( key, value ) {
+			keyboardShortcuts[key] = value;
 		}
 	};
 
