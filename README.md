@@ -1,5 +1,5 @@
-# Mastering Asynchronous JavaScript
+# The New Mobile Web Trinity: ServiceWorker, Push, and App Manifests
 
-Slides and code from [my talk](http://www.twincitiescodecamp.com/Sessions/Fall2015#s30) at Twin Cities Code Camp 19 (Fall 2015)
+Slides and code from [my talk](https://events.drupal.org/asia2016/sessions/new-mobile-web-trinity-serviceworker-push-and-app-manifests) at DrupalCon Asia 2016.
 
-[View the slides on GitHub Pages](https://callahad.github.io/tccc19-async/slides/)!
+[View the slides on GitHub Pages](https://callahad.github.io/drupalcon-trinity/slides/)!
