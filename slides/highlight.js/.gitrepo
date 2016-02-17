@@ -6,6 +6,6 @@
 [subrepo]
 	remote = https://github.com/isagalaev/highlight.js.git
 	branch = master
-	commit = 54093602c06b4094f026f319c55c499997b8bfa4
-	parent = 0ae3a909447d042a1ceb82b6dd41333ecef2d293
-	cmdver = 0.2.3
+	commit = bf6b31e47b503a40e8aeac5db0d44a6f2ff2d9ff
+	parent = 0cf41cfb3e67ca91522cae325147933f1fdbfa5c
+	cmdver = 0.3.0

@@ -7,14 +7,42 @@ Contributors: Erik Osheim <d_m@plastic-idolatry.com>
 
 function(hljs) {
 
-  var ANNOTATION = {
-    className: 'annotation', begin: '@[A-Za-z]+'
+  var ANNOTATION = { className: 'meta', begin: '@[A-Za-z]+' };
+
+  // used in strings for escaping/interpolation/substitution
+  var SUBST = {
+    className: 'subst',
+    variants: [
+      {begin: '\\$[A-Za-z0-9_]+'},
+      {begin: '\\${', end: '}'}
+    ]
   };
 
   var STRING = {
     className: 'string',
-    begin: 'u?r?"""', end: '"""',
-    relevance: 10
+    variants: [
+      {
+        begin: '"', end: '"',
+        illegal: '\\n',
+        contains: [hljs.BACKSLASH_ESCAPE]
+      },
+      {
+        begin: '"""', end: '"""',
+        relevance: 10
+      },
+      {
+        begin: '[a-z]+"', end: '"',
+        illegal: '\\n',
+        contains: [hljs.BACKSLASH_ESCAPE, SUBST]
+      },
+      {
+        className: 'string',
+        begin: '[a-z]+"""', end: '"""',
+        contains: [SUBST],
+        relevance: 10
+      }
+    ]
+
   };
 
   var SYMBOL = {
@@ -45,10 +73,21 @@ function(hljs) {
         relevance: 10
       },
       {
+        begin: /\[/,
+        end: /\]/,
+        excludeBegin: true,
+        excludeEnd: true,
+        relevance: 0,
+        contains: [TYPE]
+      },
+      {
         className: 'params',
         begin: /\(/,
         end: /\)/,
-        relevance: 0
+        excludeBegin: true,
+        excludeEnd: true,
+        relevance: 0,
+        contains: [TYPE]
       },
       NAME
     ]
@@ -58,6 +97,7 @@ function(hljs) {
     className: 'function',
     beginKeywords: 'def',
     end: /[:={\[(\n;]/,
+    excludeEnd: true,
     contains: [NAME]
   };
 
@@ -70,7 +110,6 @@ function(hljs) {
       hljs.C_LINE_COMMENT_MODE,
       hljs.C_BLOCK_COMMENT_MODE,
       STRING,
-      hljs.QUOTE_STRING_MODE,
       SYMBOL,
       TYPE,
       METHOD,

@@ -1,42 +1,28 @@
 'use strict';
 
-var bluebird = require('bluebird');
-var fs       = require('fs');
-var path     = require('path');
-var jsdom    = require('jsdom');
-var utility  = require('../utility');
-var glob     = bluebird.promisify(require('glob'));
+let bluebird = require('bluebird');
+let jsdomEnv = bluebird.promisify(require('jsdom').env);
+let utility  = require('../utility');
+let glob     = bluebird.promisify(require('glob'));
 
-describe('in plain browser', function() {
-  before(function(done) {
-    var that = this;
-    var html = '<pre><code>var say = "Hello";class Car {}</code></pre>';
-
+describe('plain browser', function() {
+  before(function() {
     // Will match both `highlight.pack.js` and `highlight.min.js`
-    var filepath = utility.buildPath('..', 'build', 'highlight.*.js');
+    const filepath = utility.buildPath('..', 'build', 'highlight.*.js');
 
-    glob(filepath)
-      .then(function(hljsPath) {
-        return bluebird.fromNode(function(callback) {
-          jsdom.env(html, [hljsPath[0]], callback);
-        });
-      })
-      .then(function(window) {
-        that.block = window.document.querySelector('pre code');
-        that.hljs  = window.hljs;
-      })
-      .then(function() { done(); },
-            function(error) { done(error); });
+    return glob(filepath)
+      .then(hljsPath => jsdomEnv(this.html, hljsPath))
+      .then(window => {
+        this.block = window.document.querySelector('pre code');
+        this.hljs  = window.hljs;
+      });
   });
 
-  it('should works', function() {
+  it('should highlight block', function() {
     this.hljs.highlightBlock(this.block);
 
-    var actual = this.block.innerHTML;
+    const actual = this.block.innerHTML;
 
-    actual.should.equal(
-      '<span class="hljs-variable"><span class="hljs-keyword">var</span> say</span> = <span class="hljs-string">"Hello"</span>;' +
-      '<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{}'
-    );
+    actual.should.equal(this.expect);
   });
 });

@@ -21,11 +21,13 @@
 
 <!-- shortened language prefix -->
 <pre><code class="lang-scss">@import "compass/reset";
-$colorGreenDark: darken($colorGreen, 10);</code></pre>
+$colorGreenDark: darken($colorGreen, 10);
+</code></pre>
 
 <!-- uppercase symbols -->
 <pre><code class="SCSS">@import "compass/reset";
-$colorGreenDark: darken($colorGreen, 10);</code></pre>
+$colorGreenDark: darken($colorGreen, 10);
+</code></pre>
 
 </div>
 
@@ -38,7 +40,8 @@ $colorGreenDark: darken($colorGreen, 10);</code></pre>
 <!-- custom markup -->
 <pre><code class="html">&lt;<a href="http://dev.w3.org/html5/spec/Overview.html#the-div-element">div</a> id="contents"&gt;
   <del>&lt;p&gt;Hello, World!</del><!-- A comment should not break merging --><ins>Goodbye, cruel world!</ins>
-&lt;/div&gt;</code></pre>
+&lt;/div&gt;
+</code></pre>
 
 <!-- custom markup and tab replacement -->
 <pre><code class="python">for x in [1, 2, 3]:
@@ -94,11 +97,10 @@ $colorGreenDark: darken($colorGreen, 10);</code></pre>
 </div>
 
 <!-- sub-languages -->
-<pre><code id="sublanguages" class="xml">&lt;? echo 'php'; /* ?&gt;
+<pre><code id="sublanguages" class="php-html">&lt;? echo 'php'; /* ?&gt; */ ?&gt;
 &lt;body&gt;
-&lt;script&gt;function tf (x) { return typeof x; }&lt;/script&gt;
+&lt;script&gt;document.write('Legacy code');&lt;/script&gt;
 &lt;/body&gt;
-&lt;? end of comment */ ?&gt;
 </code></pre>
 
 <div id="build-classname">
