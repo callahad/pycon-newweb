@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="reveal.js/css/reveal.css">
     <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
     <link rel="stylesheet" href="highlight.js/src/styles/docco.css">
+    <!--
+    <link rel="stylesheet" href="highlight.js/src/styles/ir-black.css">
+    -->
     <link rel="stylesheet" href="inconsolata-webfont/css/inconsolata-webfont.css">
     <link rel="stylesheet" href="open-sans/open-sans.css">
     <link rel="stylesheet" href="style.css">
@@ -38,6 +41,9 @@
           transition: 'none', // none, fade, slide, convex, concave, zoom
           backgroundTransition: 'none',
 
+          width: 960,
+          height: 700,
+
           dependencies: [
             { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
             { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
@@ -50,6 +56,7 @@
   </head>
 
   <body class="reveal">
+    <div class="watermark">@callahad</div>
     <div class="slides">
       <section data-markdown="slides.md" data-charset="utf-8"></section>
     </div>

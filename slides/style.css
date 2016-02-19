@@ -1,3 +1,14 @@
+.reveal .watermark {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  font-size: 5vh;
+  padding: .5rem;
+  background: white;
+  border-radius: .5rem 0 0 0;
+}
+
 .reveal section img {
   background: none;
   border: none;
@@ -12,7 +23,6 @@
 
 .reveal h1 {
   font-weight: bold;
-  margin-bottom: 1em;
 }
 
 .reveal pre, .reveal code {
@@ -26,5 +36,5 @@
 .reveal pre {
   box-shadow: none;
   border: 3px solid black;
-  font-size: 0.55em;
+  font-size: 0.7em;
 }

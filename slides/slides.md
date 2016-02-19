@@ -1,350 +1,342 @@
-# Mastering Asynchronous JavaScript
+<!-- {{{ Intro -->
 
-## Dan Callahan · @callahad
+```javascript
+function hello() {
+  // Please sit where you can read this
+  console.log("Hello, DrupalCon Asia!");
+}
+```
+
+***
+
+# The New<br>Mobile Web
+
+___
+
+## Dan Callahan
 
 ## dcallahan@mozilla.com
 
+***
+
+![](img/firefox_logo-wordmark-vert_RGB.png) <!-- .element: style="max-width: 50%" -->
+
+***
+
+## URLs are Universal
+
+<!-- }}} -->
+
 ---
+
+<!-- {{{ Mobile Advantages -->
+
+# Why Apps Won
+
+***
+
+1. Installable
+2. Reliable (Works Offline)
+3. Engaging (Notifications)
+
+***
+
+## In 2016, that changes
+
+<!-- }}} -->
+
+---
+
+<!-- {{{ Installation -->
+
+# Installation
+
+***
+
+<!-- .slide: data-background="black" -->
+
+![](img/twitter-icons.png) <!-- .element: style="max-width: 50%" -->
+
+***
+
+<!-- .slide: data-background="black" -->
+
+![](img/twitter-browser.png) <!-- .element: style="max-width: 50%" -->
+
+***
+
+<!-- .slide: data-background="black" -->
+
+![](img/twitter-offline.png) <!-- .element: style="max-width: 50%" -->
+
+***
+
+## App Manifests
+
+***
+
+```html
+<link rel="manifest" src="/manifest.json">
+```
+
+```javascript
+{
+  "name": "Flipkart Lite",
+  "short_name": "Flipkart Lite",
+  "icons": [{
+    "src": "https://img1a.flixcart.com/logo.png",
+    "sizes": "192x192", "type": "image/png"
+  }],
+  "start_url": "/",
+  "orientation": "portrait",
+  "display": "standalone",
+  "theme_color": "#006cb4",
+  "background_color": "#006cb4"
+}
+```
+
+***
+
+<!-- .slide: data-background="black" -->
+
+<video controls class="stretch" src="img/flipkart.mp4"></video>
+
+<!-- }}} -->
+
+---
+
+<!-- {{{ ES2015 Syntax + Promises -->
+
+# Before we go on...
+
+## A note on new JavaScript features
+
+***
 
 ## Arrow Functions
 
 ```javascript
-var foo = (x) => x * 2; // <-- New ES6 Syntax
+var foo = (x) => x * 2; // <-- New Syntax
 
 var foo = function(x) { return x * 2; }
 ```
 
----
+***
 
-## Express.js Server
-
-```javascript
-app.get('/', function (req, res) {
-  res.send('Hello, world!');
-});
-
-app.get('/foo', function (req, res) {
-  var data = fs.readFileSync(FILE_PATH, 'utf-8');
-  res.send('Read ' + data.length + ' bytes');
-});
-```
-
----
-
-# DEMO
-
-(blocking i/o)
-
----
-
-## JavaScript is Single-Threaded
-
----
-
-<!-- .slide: data-background="black" -->
-
-![](img/event-loop.png)
-
----
-
-## Blocking
+## Promises
 
 ```javascript
-app.get('/foo', function (req, res) {
-  var data = fs.readFileSync(FILE_PATH, 'utf-8');
-  res.send('Read ' + data.length + ' bytes');
-});
+function getData() {
+  return fetch('/data').then(foo).then(bar).catch(handle);
+  //     ^~~~~~~~~~~~~~ fetch() returns a Promise
+}
+
+getData().then(baz);
+//         ^~~ Wont't run until entire chain settles
 ```
 
-## Non-Blocking
+***
 
-```javascript
-app.get('/bar', function (req, res) {
-  fs.readFile(FILE_PATH, 'utf-8', function(err, data) {
-    res.send('Read ' + data.length + ' bytes');
-  });
-});
-```
+## Promises in New Web Features
 
----
+___
 
-# DEMO
+fetch, serviceworker, push, permissions
 
-(non-blocking i/o)
+es2017 async / await
 
----
-
-## Control flow becomes a dynamic side-effect of running code
-
----
-
-## Async Conventions
-
-```javascript
-// Node-style Callbacks
-request.get("/foo", function (err, result) { ... })
-
-// jQuery Deferreds
-$.get("/foo").done(callback).fail(callback).always(callback)....
-
-// CommonJS Promises/A+
-fetch("/foo").then(ok, fail).then(ok, fail)....
-
-// Abusing Generators to Implement Coroutines
-// ...let's just ignore this one
-```
-
----
-
-## ECMAScript 2015 ("ES6") Standardized on Promises
-
----
+***
 
 <!-- .slide: data-background="black" -->
 
 ![](img/promise-states.png) <!-- .element: style="max-width: 50%" -->
 
----
-
-# DEMO
-
-(localforage)
+<!-- }}} -->
 
 ---
 
-![](img/pouchdb.png)
+<!-- {{{ Service Workers -->
 
----
+# Wait a second...
 
-## .then(ok, fail)
+## What are Service Workers?
+
+***
+
+## Service Workers are JavaScript programs with superpowers
+
+***
+
+## Service Worker Registration
 
 ```javascript
-p.then(ok, fail)             // Handle both
-p.then(ok, undefined)        // Pass through rejections
-p.then(undefined, fail)      // Pass through fulfillments
-p.then(undefined, undefined) // Pass through both
-```
-
-## .catch(fail)
-
-```javascript
-p.then(ok).catch(fail)                                    /*
-          ^~~~~~~~~~~~ Alias for .then(undefined, fail)   */
-```
-
----
-
-## Promise Chaining
-
-```javascript
-function foo() {
-  return fetch().then(stepOne).then(stepTwo).catch(handleErr);
-  //     ^~~~~~~ Returns a Promise
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/js/sw.js', {scope: '/'})
 }
-
-foo().then(stepThree);
-//         ^~~~~~~~~ Wont't run until entire chain settles
 ```
 
+***
+
+## Service Workers Require SSL
+
+***
+
+![](img/letsencrypt-logo-horizontal.svg) <!-- .element: style="max-width: 50%" -->
+
+<!-- }}} -->
+
 ---
+
+<!-- {{{ Reliability -->
+
+# Reliability
+
+## (Offline Support)
+
+***
+
+## Cache API
+
+```javascript
+// Managing caches
+caches.open('my-cache-v1')        .then(cache => ...);
+caches.delete('my-cache-v1')      .then(ok => ...);
+caches.match(req)                 .then(res => ...);
+```
+
+```javascript
+// Using a cache
+cache.add(req)                    .then(() => ...);
+cache.addAll([req1, req2, ...])   .then(() => ...);
+cache.put(req, res)               .then(() => ...);
+cache.delete(req)                 .then(ok => ... );
+cache.match(req)                  .then(res => ...);
+```
+
+***
+
+## Preloading a Cache
+
+```javascript
+self.addEventListener('install', function(event) {
+  var staticContent = [
+    '/', '/js/app.js', '/img/icon.svg',
+    '/manifest.json', '/favicon.ico'
+  ];
+
+  caches.open('my-cache-v1')
+    .then(cache => cache.addAll(staticContent))
+});
+```
+
+***
+
+## Responding from a Cache
+
+```javascript
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
+```
+
+***
 
 <!-- .slide: data-background="black" -->
 
-![](img/promise-flow.png)
+<video controls class="stretch" src="img/pokedex.mp4"></video>
+
+<!-- }}} -->
 
 ---
 
-## Promise Constructors
+<!-- {{{ Engagement -->
 
-```javascript
-new Promise(function(resolve, reject) { /* ... */ });
+# Engagement
 
-Promise.resolve(42);
+## (Push Notifications)
 
-Promise.reject("Bah, humbug!");
-```
+***
 
----
+<!-- .slide: data-background="black" -->
 
-## Promisification by hand
+![](img/notification-app.png) <!-- .element: style="max-width: 50%; max-height: 75vh;" -->
 
-```javascript
-function readFilePromise = function(filename, encoding) {
-  return new Promise(function(resolve, reject) {
-    fs.readFile(filename, encoding, function(err, data) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-}
+***
 
-app.get('/baz', function (req, res) {
-  fs.readFilePromise(FILE_PATH, 'utf-8')
-  .then(data => res.send('Read ' + data.length + ' bytes'))
-});
-```
+<!-- .slide: data-background="black" -->
 
----
+![](img/notification-none.png) <!-- .element: style="max-width: 50%; max-height: 75vh;" -->
 
-## Promisification with a library
+***
 
-```javascript
-// Example using Bluebird from http://bluebirdjs.com/
-var readFilePromise = bluebird.promisify(fs.readfile);
-var pfs = bluebird.promisifyAll(fs);
+<!-- .slide: data-background="black" -->
 
-app.get('/baz', function (req, res) {
-  fs.readFilePromise(FILE_PATH, 'utf-8')
-  .then(data => res.send('Read ' + data.length + ' bytes'))
-});
-```
+![](img/notification-web.png) <!-- .element: style="max-width: 50%; max-height: 75vh" -->
 
----
+***
 
-## ES6 Utilities
-
-```javascript
-Promise.all([p1, p2, ..., pN]).then(allResults => { ... });
-
-Promise.race([p1, p2, ..., pN]).then(firstResult => { ...  });
-```
-
----
-
-> "Refactor of PouchDB's map/reduce module to replace callbacks with promises: 290 insertions, 555 deletions."
-
----
-
-## Supported Everywhere but IE
-
-Easy to polyfill
-
----
-
-## Used in the Web Platform
-
-fetch, serviceworker, push
-
----
-
-## Unsubscribing from Push
+## Getting Permission
 
 ```javascript
 navigator.serviceWorker.ready
-.then(reg => reg.pushManager.getSubscription())
-.then(subscription => subscription.unsubscribe())
-.then(successful => /* if successful === true, unsubscribed... */ )
-.catch(err => /* Unsubscription failed */) 
+  .then(registration => registration.pushManager.subscribe())
+  .then(subscription => fetch('/api/save-endpoint', {
+    method: 'POST',
+    headers: { 'Content-Type: application/json' },
+    body: JSON.stringify(subscription)
+  }))
+  .then(res => ...);
 ```
 
----
+***
 
-# PUZZLES
+<!-- .slide: data-background="black" -->
 
----
+![](img/permission.png) <!-- .element: style="max-width: 50%" -->
 
-## Puzzle #1
+***
+
+## Receiving Push Events
 
 ```javascript
-Promise.resolve("foo").then().then().then(x => console.log(x));
+self.addEventListener('push', function(event) {
+  event.waitUntil(
+    self.registration.showNotification('My Title', {
+      body: 'Hello, world!'
+    })
+  );
+});
 ```
 
----
+***
 
-## Puzzle #2
+<!-- .slide: data-background="black" -->
 
-```javascript
-Promise.resolve("foo")
-       .then("bar")
-       .then(x => console.log(x));
-```
+![](img/desktop-notification.png) <!-- .element: style="max-width: 50%" -->
+
+<!-- }}} -->
 
 ---
 
-## Puzzle #3
+<!-- {{{ Conclusion -->
 
-```javascript
-Promise.resolve("foo")
-       .then(Promise.resolve("bar"))
-       .then(x => console.log(x));
-```
+# The Web Can Be
 
----
+## Installable, Reliable, and Engaging
 
-## Puzzle #4
-
-```javascript
-var p = Promise.resolve({});
-
-p.then(x => x["hello"] = "world");
-
-p.then(x => console.log(x));
-```
-
----
-
-## Puzzle #5
-```javascript
-function f() {
-  return Promise.resolve("foo")
-                .then(a => { return "bar" })
-                .then(b => { return a + b })
-}
-
-f().then(x => console.log(x))
-   .catch(err => console.error("Caught:", err));
-```
-
----
-
-## Forwarding values
-
-```javascript
-function f() {
-  return Promise.resolve("foo")
-                .then(a => { return Promise.all([a, "bar"]) })
-                .then(b => { return b[0] + b[1] })
-}
-
-f().then(x => console.log(x))
-   .catch(err => console.error("Caught:", err));
-```
-
----
-
-## ES7 async / await
-
-```javascript
-async function f() {
-  try {
-    var a = await Promise.resolve("foo");
-    var b = await Promise.resolve("bar");
-    var x = a + b;
-    return x;
-  } catch(err) {
-    throw err;
-  }
-}
-
-f().then(x => console.log(x))
-   .catch(err => console.error("Caught:", err));
-```
-
----
-
-## BabelJS.io
-
----
-
-![](img/firefox_logo-wordmark-vert_RGB.png) <!-- .element: style="max-width: 50%" -->
-
----
+***
 
 # Questions?
 
-@callahad
+Slides and links at [github.com/callahad/drupalcon-newweb](https://github.com/callahad/drupalcon-newweb)
 
-Slides at https://github.com/callahad/tccc19-async
+___
+
+Please evaluate this session at [https://bit.ly/](bit.ly/1PRhA0y)<code>[1PRhA0y](https://bit.ly/1PRhA0y)</code>
+
+<!-- }}} -->
+
+<!-- vim: set foldmethod=marker foldenable foldcolumn=1: -->
