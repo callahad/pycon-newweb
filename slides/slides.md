@@ -335,7 +335,7 @@ Slides and links at [github.com/callahad/drupalcon-newweb](https://github.com/ca
 
 ___
 
-Please evaluate this session at [https://bit.ly/](bit.ly/1PRhA0y)<code>[1PRhA0y](https://bit.ly/1PRhA0y)</code>
+Please evaluate this session at [https://bit.ly/](https://bit.ly/1PRhA0y)<code>[1PRhA0y](https://bit.ly/1PRhA0y)</code>
 
 <!-- }}} -->
 
