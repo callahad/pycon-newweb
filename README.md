@@ -1,9 +1,13 @@
-# The New Mobile Web Trinity: ServiceWorker, Push, and App Manifests
+# The New Mobile Web : ServiceWorker, Push, and App Manifests
 
-Slides and code from [my talk](https://events.drupal.org/asia2016/sessions/new-mobile-web-trinity-serviceworker-push-and-app-manifests) at DrupalCon Asia 2016.
+Slides and code from [my talk](https://us.pycon.org/2016/schedule/presentation/2152/) at PyCon 2016.
 
-[View the slides on GitHub Pages](https://callahad.github.io/drupalcon-newweb/slides/)!
+[View the slides on GitHub Pages](https://callahad.github.io/pycon-newweb/slides/)!
 
 Learn more about Service Workers at [serviceworke.rs](https://serviceworke.rs/)
 
-Track Mozilla's progress at [wiki.mozilla.org/Apps](https://wiki.mozilla.org/Apps)
+Resources:
+
+- "[serviceworke.rs](https://serviceworke.rs/)" has many annotated demos of using service workers in various ways, especially related to push notifications.
+- "[The Offline Cookbook](https://jakearchibald.com/2014/offline-cookbook/)" describes many strategies for handling interactions between the network, service worker, and caches.
+- "[Instant Loading: Building offline-first Progressive Web Apps - Google I/O 2016](https://www.youtube.com/watch?v=cmGr0RszHc8)" shows how to incrementally add service workers to a web app.

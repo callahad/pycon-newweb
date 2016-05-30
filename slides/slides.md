@@ -3,7 +3,7 @@
 ```javascript
 function hello() {
   // Please sit where you can read this
-  console.log("Hello, DrupalCon Asia!");
+  console.log("Hello, PyCon!");
 }
 ```
 
@@ -331,11 +331,7 @@ self.addEventListener('push', function(event) {
 
 # Questions?
 
-Slides and links at [github.com/callahad/drupalcon-newweb](https://github.com/callahad/drupalcon-newweb)
-
-___
-
-Please evaluate this session at [https://bit.ly/](https://bit.ly/1PRhA0y)<code>[1PRhA0y](https://bit.ly/1PRhA0y)</code>
+Slides and links at [github.com/callahad/pycon-newweb](https://github.com/callahad/pycon-newweb)
 
 <!-- }}} -->
 
