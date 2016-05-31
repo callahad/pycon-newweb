@@ -1,12 +1,12 @@
 .reveal .watermark {
   position: absolute;
   right: 0;
-  bottom: 0;
+  top: 0;
   z-index: 10;
   font-size: 5vh;
   padding: .5rem;
   background: white;
-  border-radius: .5rem 0 0 0;
+  border-radius: 0 0 0 .5rem;
 }
 
 .reveal section img {
@@ -38,3 +38,34 @@
   border: 3px solid black;
   font-size: 0.7em;
 }
+
+/* Derived from Jake Archibald's Offline Cookbook:
+   https://jakearchibald.com/2014/offline-cookbook/#cache-falling-back-to-network
+*/
+  .diagram-container .label,
+  .diagram-container .state-label {
+    font-size: 1.5rem;
+    text-align: center;
+    text-anchor: middle;
+  }
+  .diagram-container .state-label {
+    font-size: 2rem;
+    fill: #009d81;
+  }
+  .diagram-container .joiner {
+    fill: none;
+    stroke: #009d81;
+    stroke-width: 3.2;
+  }
+  .diagram-container .cross {
+    fill: none;
+    stroke: #da0000;
+    stroke-width: 5.9;
+  }
+  .diagram-defs {
+    display: none;
+  }
+
+  .animate-drawing .diagram-container .anim > * {
+    display: none;
+  }
