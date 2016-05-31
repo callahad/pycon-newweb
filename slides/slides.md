@@ -51,17 +51,17 @@ ___
 
 ***
 
+<!-- .slide: data-background="black" -->
+
+![](img/twitter-offline.png) <!-- .element: style="max-width: 50%" -->
+
+***
+
 ## Apps won
 
 1. Reliable (Works Offline)
 2. Engaging (Notifications)
 3. Installable
-
-***
-
-<!-- .slide: data-background="black" -->
-
-![](img/twitter-offline.png) <!-- .element: style="max-width: 50%" -->
 
 ***
 
@@ -150,6 +150,21 @@ if ('serviceWorker' in navigator) {
 
 ***
 
+## Preloading a Cache
+
+```javascript
+self.addEventListener('install', function(event) {
+  var deps = [ '/', '/style.css', '/app.js', /* ... */ ];
+
+  event.waitUntil(
+    caches.open('my-cache-v1')
+      .then(cache => cache.addAll(deps));
+  );
+});
+```
+
+***
+
 ![](img/sw-fetch.png) <!-- .element: style="max-width: 75%" -->
 
 ***
@@ -194,21 +209,6 @@ self.addEventListener('fetch', function(event) {
 <!-- }}} -->
 
 <em style="font-size: 1.2rem; position: absolute; right: 0; bottom: 0;">Diagram from [The Offline Cookbook](https://jakearchibald.com/2014/offline-cookbook/)</em>
-
-***
-
-## Preloading a Cache
-
-```javascript
-self.addEventListener('install', function(event) {
-  var deps = [ '/', '/style.css', '/app.js', /* ... */ ];
-
-  event.waitUntil(
-    caches.open('my-cache-v1')
-      .then(cache => cache.addAll(deps));
-  );
-});
-```
 
 ***
 
