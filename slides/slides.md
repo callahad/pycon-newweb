@@ -3,7 +3,7 @@
 ```javascript
 function hello() {
   // Please sit where you can read this
-  console.log("Hello, PyCon!");
+  console.log("Hello, World!");
 }
 ```
 
